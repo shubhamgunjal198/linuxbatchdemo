@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 
 #SEcond comment
 #Third comment
+=======
+#First draft
+>>>>>>> parent of 8468fa3 (second add)
