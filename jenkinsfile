@@ -1,47 +1,43 @@
 
-pipeline {
-    agent any
+pipeline{
     tools{
-        maven 'my maven'
+        jdk 'myjava'
+        maven 'mymaven'
     }
-    stages{
-        stage('clone repo'){
-            steps{
-                git branch:'master' , url:'https://github.com/shubhamgunjal198/DevOpsClassCodes.git'
-            }
-          
-        }
-        stage('compile code'){
-            steps{
-                sh 'mvn compile'
-            }
-        }
-        stage('code review'){
-            steps{
-                sh 'mvn pmd:pmd'
-            }
-        
-        post{
-            success{
-                recordIssues sourceCodeRetention: 'LAST_BUILD', tools: [pmdParser(pattern: '**/pmd.xml')]
-            }
-        }
-        }
-        stage('test code'){
-            steps{
-                sh 'mvn test'
-            }
-            post{
-                success{
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-        stage('package code'){
-            steps{
-                sh 'mvn package'
-            }
-        }
-
-    }
+	agent any
+      stages{
+           stage('Checkout'){
+	    
+               steps{
+		 echo 'cloning..'
+                 git 'https://github.com/Sonal0409/DevOpsClassCodes.git'
+              }
+          }
+          stage('Compile'){
+             
+              steps{
+                  echo 'compiling..'
+                  sh 'mvn compile'
+	      }
+          }
+          stage('CodeReview'){
+		  
+              steps{
+		    
+		  echo 'codeReview'
+                  sh 'mvn pmd:pmd'
+              }
+          }
+           stage('UnitTest'){
+		  
+              steps{
+	         echo 'Testing'
+                  sh 'mvn test'
+              }
+               post {
+               success {
+                   junit 'target/surefire-reports/*.xml'
+               }
+           }	
+          }
 }
