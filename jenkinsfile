@@ -1,29 +1,47 @@
-pipeline{
+
+pipeline {
+    agent any
     tools{
         maven 'my maven'
     }
-    agent any // any = any available server where jenkisn can run the pipleine
-    
     stages{
-        stage('Checkout Code'){
+        stage('clone repo'){
             steps{
-                git 'https://github.com/shubhamgunjal198/DevOpsClassCodes.git'
+                git branch:'master' , url:'https://github.com/shubhamgunjal198/DevOpsClassCodes.git'
             }
+          
         }
-        stage('Compile Code'){
+        stage('compile code'){
             steps{
                 sh 'mvn compile'
             }
         }
-       stage('Review Code'){
+        stage('code review'){
             steps{
                 sh 'mvn pmd:pmd'
             }
+        
+        post{
+            success{
+                recordIssues sourceCodeRetention: 'LAST_BUILD', tools: [pmdParser(pattern: '**/pmd.xml')]
+            }
+        }
+        }
+        stage('test code'){
+            steps{
+                sh 'mvn test'
+            }
             post{
                 success{
-                    recordIssues sourceCodeRetention: 'LAST_BUILD', tools: [pmdParser(pattern: '**/pmd.xml')]
+                    junit 'target/surefire-reports/*.xml'
                 }
             }
         }
+        stage('package code'){
+            steps{
+                sh 'mvn package'
+            }
+        }
+
     }
 }
