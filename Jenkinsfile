@@ -2,10 +2,10 @@
 pipeline{
     tools{
        // jdk 'myjava'
-        maven 'mymaven'
+        maven 'maven'
     }
 	agent {
-		label 'linux_node'
+		label 'node-1'
 	}
       stages{
            stage('Checkout'){
